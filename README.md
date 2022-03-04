@@ -1,2 +1,2 @@
-# CPP_logger
+# C++ Logger
 Logger Implementation In C++
