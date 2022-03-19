@@ -12,7 +12,7 @@
 #define LOGGER_H
 #include <iostream>
 #include <string>
-#include <chrono>
+#include <iomanip>
 
 // OS
 #ifdef linux
