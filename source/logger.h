@@ -1,7 +1,18 @@
+// Logger
+
+// Usage
+// woXrooX::Logger log;
+// log.success("Message");
+// log.info("Message");
+// log.warning("Message");
+// log.error("Message");
+// Log Pattern: [HH:mm:ss MMM  d yyyy][type] message
+
 #ifndef LOGGER_H
 #define LOGGER_H
 #include <iostream>
 #include <string>
+#include <chrono>
 
 // OS
 #ifdef linux
@@ -63,7 +74,13 @@ namespace woXrooX{
 
     ///////// TimeStamp
     const std::string timestamp(){
-      const std::string timestamp = std::string("[") + std::string(__TIME__) + std::string(" ") + std::string(__DATE__) + std::string("]");
+      // Ugly time
+      std::stringstream ss;
+      std::time_t const dt = time(NULL);
+      ss << std::put_time(localtime(&dt), "%T %F");
+      std::string datetime = ss.str();
+
+      const std::string timestamp = std::string("[") + datetime + std::string("]");
       return timestamp;
     }
 
