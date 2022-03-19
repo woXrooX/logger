@@ -20,12 +20,12 @@ int main(int argc, char const *argv[]) {
 ```
 ### Output
 ```
-[19:50:36 Mar  4 2022][SUCCESS] Success
-[19:50:36 Mar  4 2022][INFO] Information
-[19:50:36 Mar  4 2022][WARNING] Warning
-[19:50:36 Mar  4 2022][ERROR] Error
+[19:50:36 2022-03-19][SUCCESS] Success
+[19:50:36 2022-03-19][INFO] Information
+[19:50:36 2022-03-19][WARNING] Warning
+[19:50:36 2022-03-19][ERROR] Error
 ```
 ### Log Pattern
 ```
-[HH:mm:ss MMM  d yyyy][type] message
+[HH:mm:ss yyyy-MM-dd ][type] message
 ```
