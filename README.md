@@ -27,5 +27,5 @@ int main(int argc, char const *argv[]) {
 ```
 ### Log Pattern
 ```
-[HH:mm:ss yyyy-MM-dd ][type] message
+[HH:mm:ss yyyy-MM-dd][type] message
 ```
