@@ -11,8 +11,9 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 #include <iostream>
+#include <fstream>
 #include <string>
-#include <iomanip>
+#include <iomanip> // for time
 
 // OS
 #ifdef linux
@@ -32,7 +33,9 @@ namespace woXrooX{
   class Logger{
   public:
     Logger(){}
-    ~Logger(){}
+    ~Logger(){
+      this->file.close();
+    }
 
     ///////// Success
     void success(const std::string &message = ""){
@@ -54,7 +57,17 @@ namespace woXrooX{
       log(ERROR, message);
     }
 
+    ///////// enableLogToFile
+    void enableLogToFile(){
+      this->log("INFO", "Log To File Enabled. Log File Location: ./log/");
+      this->logsToFileEnabled = true;
+      this->file.open("./log/logs.log", std::ios_base::app); // Second Argument For Append Mode
+    }
+
   private:
+    std::ofstream file;
+    bool logsToFileEnabled = false;
+
     std::string colorStart = "";
     std::string colorEnd = "";
 
@@ -62,14 +75,21 @@ namespace woXrooX{
     void log(std::string type, std::string message){
       if(message == ""){
         type = ERROR;
-        message = "Log Message Not Entered.";
+        message = "Log Message Has Not Been Provided";
       }
 
       // setting color depending the type
-      colors(type);
+      this->colors(type);
 
       // Out
-      std::cout << timestamp() << "[" << this->colorStart << type << this->colorEnd << "] " << message << '\n';
+      std::cout << this->timestamp() << "[" << this->colorStart << type << this->colorEnd << "] " << message << '\n';
+      this->logsToFile(type, message);
+    }
+
+    ///////// logsToFile
+    void logsToFile(std::string type, std::string message){
+      if(!this->logsToFileEnabled) return;
+      this->file << this->timestamp() << "[" << type << "] " << message << "\n";
     }
 
     ///////// TimeStamp

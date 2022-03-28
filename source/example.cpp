@@ -4,6 +4,7 @@ int main(int argc, char const *argv[]) {
 
   woXrooX::Logger log;
 
+  log.enableLogToFile();
   log.success("Success");
   log.info("Information");
   log.warning("Warning");
