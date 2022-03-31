@@ -14,7 +14,7 @@ int main(int argc, char const *argv[]) {
   log.info("Information");
   log.warning("Warning");
   log.error("Error");
-  log.custom("TYPE", "Custom");
+  log.custom("customType", "Custom");
 
   return 0;
 }
@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
 [19:50:36 2022-03-19][INFO] Information
 [19:50:36 2022-03-19][WARNING] Warning
 [19:50:36 2022-03-19][ERROR] Error
-[19:50:36 2022-03-19][TYPE] Custom
+[19:50:36 2022-03-19][customType] Custom
 ```
 ### Log Pattern
 ```
