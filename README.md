@@ -9,7 +9,9 @@ To use the Logger, you need to include the logger.h into your project.
 int main(int argc, char const *argv[]) {
 
   woXrooX::Logger log;
-  // To Enable Log To File Call This Method. Currently Path And File Are Not Dynamic. Hard Coded Path And File -> "./log/log.log"
+  // To Enable Log To File Call This Method.
+  // Currently Path And File Are Not Dynamic.
+  // Hard Coded Path And File -> "./log/log.log"
   log.enableLogToFile();
 
   log.success("Success");
