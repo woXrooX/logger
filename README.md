@@ -21,7 +21,7 @@ int main(int argc, char const *argv[]) {
   log.custom("customType", "Custom");
   
   // Chaining
-  log.custom("customType", "Line And Chaining").line().info("Information);
+  log.custom("customType", "Line And Chaining").line().info("Chained Info);
 
   return 0;
 }
@@ -35,7 +35,7 @@ int main(int argc, char const *argv[]) {
 [19:50:36 2022-03-19][customType] Custom
 [19:50:36 2022-03-19][customType] Line And Chaining
 ----------------------------------------------------------------
-[19:50:36 2022-03-19][INFO] Information
+[19:50:36 2022-03-19][INFO] Chained Info
 
 
 ```
