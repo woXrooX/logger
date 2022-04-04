@@ -3,21 +3,16 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <iomanip> // for time
+#include <typeinfo>
+#include <iomanip>
 
 // OS
-#ifdef linux
-#define OPERATINGSYSTEM "linux"
+#ifdef __unix__
+#define OPERATINGSYSTEM "unix"
 #endif
 #ifdef _WIN32
 #define OPERATINGSYSTEM "windows"
 #endif
-
-// TYPES
-#define SUCCESS "SUCCESS"
-#define INFO "INFO"
-#define WARN "WARNING"
-#define ERROR "ERROR"
 
 namespace woXrooX{
   class Logger{
@@ -28,28 +23,44 @@ namespace woXrooX{
     }
 
     ///////// Success
-    void success(const std::string &message = ""){
+    template<typename T>
+    Logger& success(T message){
       log(SUCCESS, message);
+      return *this;
     }
 
     ///////// Info
-    void info(const std::string &message = ""){
+    template<typename T>
+    Logger& info(T message){
       log(INFO, message);
+      return *this;
     }
 
     ///////// Warning
-    void warning(const std::string &message = ""){
-      log(WARN, message);
+    template<typename T>
+    Logger& warning(T message){
+      log(WARNING, message);
+      return *this;
     }
 
     ///////// Error
-    void error(const std::string &message = ""){
+    template<typename T>
+    Logger& error(T message){
       log(ERROR, message);
+      return *this;
     }
 
     ///////// Custom
-    void custom(const std::string &type, const std::string &message = ""){
+    template<typename T1, typename T2>
+    Logger& custom(T1 type, T2 message){
       log(type, message);
+      return *this;
+    }
+
+    ///////// Line / Divider
+    Logger& line(){
+      std::cout << this->colorLine << "----------------------------------------------------------------" << this->colorEnd << '\n';
+      return *this;
     }
 
     ///////// enableLogToFile
@@ -60,30 +71,37 @@ namespace woXrooX{
     }
 
   private:
+
+    // TYPES
+    std::string SUCCESS = "SUCCESS";
+    std::string INFO = "INFO";
+    std::string WARNING = "WARNING";
+    std::string ERROR = "ERROR";
+
     std::ofstream file;
     bool logsToFileEnabled = false;
 
     std::string colorStart = "";
-    std::string colorEnd = "";
+    std::string colorEnd = "\033[0m";
+    std::string colorLine = "\033[1;92m";
 
     ///////// Log
-    void log(std::string type, std::string message){
-      if(message == ""){
-        type = ERROR;
-        message = "Log Message Has Not Been Provided";
-      }
-
+    template<typename T1, typename T2>
+    void log(T1 type, T2 message){
       // setting color depending the type
       this->colors(type);
 
       // Out
       std::cout << this->timestamp() << "[" << this->colorStart << type << this->colorEnd << "] " << message << '\n';
-      this->logsToFile(type, message);
+
+      if(this->logsToFileEnabled) {
+        this->logsToFile(type, message);
+      }
     }
 
     ///////// logsToFile
-    void logsToFile(std::string type, std::string message){
-      if(!this->logsToFileEnabled) return;
+    template<typename T1, typename T2>
+    void logsToFile(T1 type, T2 message){
       this->file << this->timestamp() << "[" << type << "] " << message << "\n";
     }
 
@@ -100,17 +118,17 @@ namespace woXrooX{
     }
 
     ///////// Colors
-    // https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
-    void colors(std::string type){
+    template<typename T>
+    void colors(T type){
       // linux
-      if(OPERATINGSYSTEM == "linux"){
-        this->colorEnd = "\033[0m";
-        if(type == SUCCESS) this->colorStart = "\033[1;32m";
-        else if(type == INFO) this->colorStart = "\033[1;34m";
-        else if(type == WARN) this->colorStart = "\033[1;33m";
-        else if(type == ERROR) this->colorStart = "\033[1;31m";
-        else this->colorStart = "\033[1;90m";
+      if(OPERATINGSYSTEM == "unix"){
+        this->colorStart = "\033[1;90m";
+        if(SUCCESS.compare(type) == 0) this->colorStart = "\033[1;32m";
+        else if(INFO.compare(type) == 0) this->colorStart = "\033[1;34m";
+        else if(WARNING.compare(type) == 0) this->colorStart = "\033[1;33m";
+        else if(ERROR.compare(type) == 0) this->colorStart = "\033[1;31m";
       }
+      // }
     }
   };
 }
