@@ -6,7 +6,7 @@ To use the Logger, you need to include the logger.h into your project.
 ```C++
 #include "logger.h"
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char const *argv[]){
 
   woXrooX::Logger log;
   // To Enable Log To File Call This Method.
