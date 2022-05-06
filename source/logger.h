@@ -3,8 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <typeinfo>
-#include <iomanip>
+#include <typeinfo> // For typeid
+#include <iomanip> // for time
 
 // OS
 #ifdef __unix__
@@ -63,38 +63,59 @@ namespace woXrooX{
       return *this;
     }
 
-    ///////// enableLogToFile
+    ///////// enable & disable LogToFile
+    // enable
     void enableLogToFile(){
       this->log("INFO", "Log To File Enabled. Log File Location: ./log/");
-      this->logsToFileEnabled = true;
+      this->logToFileEnabled = true;
       this->file.open("./log/logs.log", std::ios_base::app); // Second Argument For Append Mode
+    }
+    // disable
+    void disableLogToFile(){
+      this->log("INFO", "Log To File Disabled");
+      this->logToFileEnabled = false;
+      this->file.close();
+    }
+
+    ///////// enable & disable SquareBrackets
+    // enable
+    void enableSquareBrackets(){
+      this->squareBracketsOpen = "[";
+      this->squareBracketsClose = "]";
+    }
+    // disable
+    void disableSquareBrackets(){
+      this->squareBracketsOpen = "";
+      this->squareBracketsClose = " ";
     }
 
   private:
-
     // TYPES
-    std::string SUCCESS = "SUCCESS";
-    std::string INFO = "INFO";
-    std::string WARNING = "WARNING";
-    std::string ERROR = "ERROR";
+    const std::string SUCCESS = "SUCCESS";
+    const std::string INFO = "INFO";
+    const std::string WARNING = "WARNING";
+    const std::string ERROR = "ERROR";
 
     std::ofstream file;
-    bool logsToFileEnabled = false;
+    bool logToFileEnabled = false;
+
+    std::string squareBracketsOpen = "[";
+    std::string squareBracketsClose = "]";
 
     std::string colorStart = "";
     std::string colorEnd = "\033[0m";
-    std::string colorLine = "\033[1;92m";
+    std::string colorLine = "\033[1;90m";
 
     ///////// Log
     template<typename T1, typename T2>
     void log(T1 type, T2 message){
-      // setting color depending the type
+      // setting color depending on the type
       this->colors(type);
 
       // Out
-      std::cout << this->timestamp() << "[" << this->colorStart << type << this->colorEnd << "] " << message << '\n';
+      std::cout << this->timestamp() << this->squareBracketsOpen << this->colorStart << type << this->colorEnd << this->squareBracketsClose << message << '\n';
 
-      if(this->logsToFileEnabled) {
+      if(this->logToFileEnabled) {
         this->logsToFile(type, message);
       }
     }
@@ -113,7 +134,7 @@ namespace woXrooX{
       ss << std::put_time(localtime(&dt), "%T %F");
       std::string datetime = ss.str();
 
-      const std::string timestamp = std::string("[") + datetime + std::string("]");
+      const std::string timestamp = this->squareBracketsOpen + datetime + this->squareBracketsClose;
       return timestamp;
     }
 
