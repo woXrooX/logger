@@ -81,7 +81,7 @@ namespace woXrooX{
     // enable
     void enableSquareBrackets(){
       this->squareBracketsOpen = "[";
-      this->squareBracketsClose = "]";
+      this->squareBracketsClose = "] ";
     }
     // disable
     void disableSquareBrackets(){
@@ -100,7 +100,7 @@ namespace woXrooX{
     bool logToFileEnabled = false;
 
     std::string squareBracketsOpen = "[";
-    std::string squareBracketsClose = "]";
+    std::string squareBracketsClose = "] ";
 
     std::string colorStart = "";
     std::string colorEnd = "\033[0m";
