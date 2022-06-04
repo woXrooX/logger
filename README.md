@@ -35,7 +35,7 @@ int main(int argc, char const *argv[]){
   log.info("Square Brackets Are Enabled");
   // Disabler
   log.disableSquareBrackets();
-  log.info("Square Brackets Are Enabled");
+  log.info("Square Brackets Are Disabled");
   
   
 
@@ -54,7 +54,7 @@ int main(int argc, char const *argv[]){
 ----------------------------------------------------------------
 [19:50:36 2022-03-19] [INFO] Chained Info
 [12:50:05 2022-05-06] [INFO] Square Brackets Are Enabled
-12:50:05 2022-05-06 INFO Square Brackets Are Enabled
+12:50:05 2022-05-06 INFO Square Brackets Are Disabled
 
 
 ```
