@@ -17,6 +17,7 @@ int main(int argc, char const *argv[]){
   // To Disable Log To File Use This Following Method.
   log.disableLogToFile();
 
+  // Modes
   log.success("Success");
   log.info("Information");
   log.warning("Warning");
@@ -29,7 +30,7 @@ int main(int argc, char const *argv[]){
   // Chaining
   log.custom("customType", "Line And Chaining").line().info("Chained Info);
 
-  //// Enable & Disable Square Brackets
+  //// Enable & Disable Square Brackets (By Default Enabled)
   // Enabler
   log.enableSquareBrackets();
   log.info("Square Brackets Are Enabled");
