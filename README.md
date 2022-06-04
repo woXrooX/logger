@@ -37,8 +37,6 @@ int main(int argc, char const *argv[]){
   // Disabler
   log.disableSquareBrackets();
   log.info("Square Brackets Are Disabled");
-  
-  
 
   return 0;
 }
