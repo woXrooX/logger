@@ -1,156 +1,236 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 #include <iostream>
+#include <filesystem> // 4 logsAbsolutePath Existance Check
 #include <fstream>
 #include <string>
-#include <typeinfo> // For typeid
 #include <iomanip> // for time
 
-// OS
-#ifdef __unix__
-#define OPERATINGSYSTEM "unix"
-#endif
-#ifdef _WIN32
-#define OPERATINGSYSTEM "windows"
-#endif
+// Types
+struct Types{
+  static inline const std::string SUCCESS = "SUCCESS";
+  static inline const std::string INFO = "INFO";
+  static inline const std::string WARNING = "WARNING";
+  static inline const std::string ERROR = "ERROR";
+
+};
 
 namespace woXrooX{
-  class Logger{
+  class Logger final{
   public:
-    Logger(){}
-    ~Logger(){
-      this->file.close();
-    }
-
     ///////// Success
     template<typename T>
-    Logger& success(T message){
-      log(SUCCESS, message);
-      return *this;
+    static void success(T message){
+      Logger::log(Types::SUCCESS, message);
+
     }
 
     ///////// Info
     template<typename T>
-    Logger& info(T message){
-      log(INFO, message);
-      return *this;
+    static void info(T message){
+      Logger::log(Types::INFO, message);
+
     }
 
     ///////// Warning
     template<typename T>
-    Logger& warning(T message){
-      log(WARNING, message);
-      return *this;
+    static void warning(T message){
+      Logger::log(Types::WARNING, message);
+
     }
 
     ///////// Error
     template<typename T>
-    Logger& error(T message){
-      log(ERROR, message);
-      return *this;
+    static void error(T message){
+      Logger::log(Types::ERROR, message);
+
     }
 
     ///////// Custom
     template<typename T1, typename T2>
-    Logger& custom(T1 type, T2 message){
-      log(type, message);
-      return *this;
+    static void custom(T1 type, T2 message){
+      Logger::log(type, message);
+
     }
 
-    ///////// Line / Divider
-    Logger& line(){
-      std::cout << this->colorLine << "----------------------------------------------------------------" << this->colorEnd << '\n';
-      return *this;
+    ///////// Line
+    static void line(){
+      std::cout << Logger::colorLine << "----------------------------------------------------------------" << Logger::colorEnd << '\n';
+
+      // If Enabled Line For "logToFile"
+      if(Logger::logToFileEnabled) Logger::logToFile("\n----------------------------------------------------------------------------------------\n");
+
     }
+
+    ///////// New Line
+    static void newLine(){
+      std::cout << '\n';
+
+      //  If Enabled New Line For "logToFile"
+      if(Logger::logToFileEnabled) Logger::logToFile("\n");
+
+    }
+
 
     ///////// enable & disable LogToFile
     // enable
-    void enableLogToFile(){
-      this->log("INFO", "Log To File Enabled. Log File Location: ./log/");
-      this->logToFileEnabled = true;
-      this->file.open("./log/logs.log", std::ios_base::app); // Second Argument For Append Mode
+    static void enableLogToFile(){
+      // Check If "logsAbsolutePath" Exists
+      if(!std::filesystem::exists(Logger::logsAbsolutePath)){
+        Logger::log("WARNING", "Invalid Logs Absolute Path: " + Logger::logsAbsolutePath);
+        
+        return;
+
+      }
+
+      // Opening Log File On Append Mode
+      Logger::file.open(Logger::logsAbsolutePath + "all.log", std::ios_base::app);
+
+      // Check If File Opened Successfully
+      if(Logger::file.is_open()){
+        // After Successful Openening Enable Log To File
+        Logger::logToFileEnabled = true;
+        Logger::log(Types::INFO, "Log To File Is Enabled");
+        
+        Logger::log(Types::SUCCESS, "Log File Opened Successfully: all.log");
+        Logger::log(Types::INFO, "Log File Absolute Path: " + Logger::logsAbsolutePath);
+
+      }else{
+        Logger::log(Types::WARNING, "Log To File Is Not Enabled");
+        
+        Logger::log(Types::WARNING, "Could Not Open Log File");
+        
+        return;
+
+      }
+
     }
+    
     // disable
-    void disableLogToFile(){
-      this->log("INFO", "Log To File Disabled");
-      this->logToFileEnabled = false;
-      this->file.close();
+    static void disableLogToFile(){
+      Logger::logToFileEnabled = false;
+
+      Logger::log(Types::INFO, "Log To File Is Disabled");
+
+      Logger::closeLogFile();
+
     }
 
     ///////// enable & disable SquareBrackets
     // enable
-    void enableSquareBrackets(){
-      this->squareBracketsOpen = "[";
-      this->squareBracketsClose = "] ";
+    static void enableSquareBrackets(){
+      Logger::squareBracketsOpen = "[";
+      Logger::squareBracketsClose = "] ";
+
+      Logger::log(Types::INFO, "Square Brackets Are Enabled");
+
     }
     // disable
-    void disableSquareBrackets(){
-      this->squareBracketsOpen = "";
-      this->squareBracketsClose = " ";
+    static void disableSquareBrackets(){
+      Logger::squareBracketsOpen = "";
+      Logger::squareBracketsClose = " ";
+
+      Logger::log(Types::INFO, "Square Brackets Are Disabled");
+
     }
 
   private:
-    // TYPES
-    const std::string SUCCESS = "SUCCESS";
-    const std::string INFO = "INFO";
-    const std::string WARNING = "WARNING";
-    const std::string ERROR = "ERROR";
-
-    std::ofstream file;
-    bool logToFileEnabled = false;
-
-    std::string squareBracketsOpen = "[";
-    std::string squareBracketsClose = "] ";
-
-    std::string colorStart = "";
-    std::string colorEnd = "\033[0m";
-    std::string colorLine = "\033[1;90m";
-
+    /////////// Methods
     ///////// Log
     template<typename T1, typename T2>
-    void log(T1 type, T2 message){
+    static void log(T1 type, T2 message){
       // setting color depending on the type
-      this->colors(type);
+      Logger::setColor(type);
 
-      // Out
-      std::cout << this->timestamp() << this->squareBracketsOpen << this->colorStart << type << this->colorEnd << this->squareBracketsClose << message << '\n';
+      // Getting TimeStamp And Setting To A Variable So It Will Be Same TimeStamp On "logToFile()"
+      const std::string timestamp = Logger::timestamp();
 
-      if(this->logToFileEnabled) {
-        this->logsToFile(type, message);
-      }
+      // Out | Log
+      std::cout << Logger::squareBracketsOpen << timestamp << Logger::squareBracketsClose << Logger::squareBracketsOpen << Logger::colorStart << type << Logger::colorEnd << Logger::squareBracketsClose << message << '\n';
+
+      // Cosntructing "logToFile" [timestamp] [TYPE] Message
+      if(Logger::logToFileEnabled) Logger::logToFile(('[' + timestamp + "] [" + type + "] " + message + '\n'));
+
     }
 
-    ///////// logsToFile
-    template<typename T1, typename T2>
-    void logsToFile(T1 type, T2 message){
-      this->file << this->timestamp() << "[" << type << "] " << message << "\n";
+    ///////// logToFile
+    static void logToFile(const std::string& log){
+      // Check If Logger::logToFileEnabled Is True
+      if(!Logger::logToFileEnabled) return;
+
+      if(!(Logger::file << log)) std::cout << "ERROR: Could Not Write The Log: " << log << '\n';
+
     }
 
     ///////// TimeStamp
-    const std::string timestamp(){
-      // Ugly time
+    static const std::string timestamp(){
+      // Ugly Time Code
       std::stringstream ss;
       std::time_t const dt = time(NULL);
       ss << std::put_time(localtime(&dt), "%T %F");
       std::string datetime = ss.str();
 
-      const std::string timestamp = this->squareBracketsOpen + datetime + this->squareBracketsClose;
-      return timestamp;
+      return datetime;
+
     }
 
     ///////// Colors
-    template<typename T>
-    void colors(T type){
-      // linux
-      if(OPERATINGSYSTEM == "unix"){
-        this->colorStart = "\033[1;90m";
-        if(SUCCESS.compare(type) == 0) this->colorStart = "\033[1;32m";
-        else if(INFO.compare(type) == 0) this->colorStart = "\033[1;34m";
-        else if(WARNING.compare(type) == 0) this->colorStart = "\033[1;33m";
-        else if(ERROR.compare(type) == 0) this->colorStart = "\033[1;31m";
+    static void setColor(const std::string& type){
+      // Unix | Linux
+      if(__linux__ || __unix__){
+        Logger::colorStart = "\033[1;90m";
+        if(Types::SUCCESS.compare(type) == 0) Logger::colorStart = "\033[1;32m";
+        else if(Types::INFO.compare(type) == 0) Logger::colorStart = "\033[1;34m";
+        else if(Types::WARNING.compare(type) == 0) Logger::colorStart = "\033[1;33m";
+        else if(Types::ERROR.compare(type) == 0) Logger::colorStart = "\033[1;31m";
+
       }
-      // }
+
     }
+
+    ///////// Close Log File
+    static void closeLogFile(){
+      Logger::file.close();
+
+      // Check If File Closed Successfully
+      if(!Logger::file.is_open()) Logger::log(Types::SUCCESS, "Log File Closed Successfully");
+      else Logger::log(Types::ERROR, "Can Not Close The Log File");
+
+    }
+
+    /////////// Variables
+    // File
+    static std::ofstream file;
+    static bool logToFileEnabled;
+    static bool logOnlyToFileEnabled;
+    static const std::string logsAbsolutePath;
+
+    // Square Brackets
+    static std::string squareBracketsOpen;
+    static std::string squareBracketsClose;
+
+    // Colors
+    static std::string colorStart;
+    static std::string colorEnd;
+    static std::string colorLine;
+
   };
+  
+  std::ofstream Logger::file;
+  bool Logger::logToFileEnabled = false;
+  
+  // Path To Your Logs Folder
+  const std::string Logger::logsAbsolutePath = "/path/to/logs/";
+
+  std::string Logger::squareBracketsOpen = "";
+  std::string Logger::squareBracketsClose = " ";
+
+  std::string Logger::colorStart = "";
+  std::string Logger::colorEnd = "\033[0m";
+  std::string Logger::colorLine = "\033[1;90m";
+
+  // Alias Log To OG Logger
+  typedef Logger Log;
+
 }
 #endif
