@@ -1,14 +1,13 @@
 #include "logger.h"
 
-int main(int argc, char const *argv[]) {
+int main() {
 
-  woXrooX::Logger log;
+  woXrooX::Logger::enableLogToFile();
 
-  log.enableLogToFile();
-  log.success("Success");
-  log.info("Information");
-  log.warning("Warning");
-  log.error("Error");
+  woXrooX::Log::success("Success");
+  woXrooX::Log::info("Information");
+  woXrooX::Log::warning("Warning");
+  woXrooX::Log::error("Error");
 
   return 0;
 }
