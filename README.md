@@ -7,36 +7,37 @@ To use the Logger, you need to include the logger.h into your project.
 #include "logger.h"
 
 int main(int argc, char const *argv[]){
-
-  woXrooX::Logger log;
+  //In Case "using namespace woXrooX;" Is Always Here :)
+  
   //// Log To File
-  //// Currently Path And File Are Not Dynamic.
-  //// Hard Coded Path And File -> "./log/log.log"
-  // To Enable Log To File Call This Method.
-  log.enableLogToFile();
-  // To Disable Log To File Use This Following Method.
-  log.disableLogToFile();
+  //// Currently No Path Setter Method :)
+  //// Absolute Path Defined At -> "woXrooX::Logger::logsAbsolutePath"
+  
+  // To Enable Log To File.
+  woXrooX::Logger::enableLogToFile();
+  
+  // To Disable Log To File.
+  woXrooX::Logger::disableLogToFile();
 
   // Modes
-  log.success("Success");
-  log.info("Information");
-  log.warning("Warning");
-  log.error("Error");
-  log.custom("customType", "Custom");
-  
-  // Line
-  log.line();
-  
-  // Chaining
-  log.custom("customType", "Line And Chaining").line().info("Chained Info);
+  woXrooX::Log::success("Success");
+  woXrooX::Log::info("Information");
+  woXrooX::Log::warning("Warning");
+  woXrooX::Log::error("Error");
+  woXrooX::Log::custom("customType", "Custom");
 
-  //// Enable & Disable Square Brackets (By Default Enabled)
+  // New Line
+  woXrooX::Log::newLine();
+
+  // Line
+  woXrooX::Log::line();
+  
+  //// Enable & Disable Square Brackets (By Default Disabled)
   // Enabler
-  log.enableSquareBrackets();
-  log.info("Square Brackets Are Enabled");
+  woXrooX::Logger::enableSquareBrackets();
+  
   // Disabler
-  log.disableSquareBrackets();
-  log.info("Square Brackets Are Disabled");
+  woXrooX::Logger::disableSquareBrackets();
 
   return 0;
 }
@@ -48,12 +49,8 @@ int main(int argc, char const *argv[]){
 [19:50:36 2022-03-19] [WARNING] Warning
 [19:50:36 2022-03-19] [ERROR] Error
 [19:50:36 2022-03-19] [customType] Custom
+
 ----------------------------------------------------------------
-[19:50:36 2022-03-19] [customType] Line And Chaining
-----------------------------------------------------------------
-[19:50:36 2022-03-19] [INFO] Chained Info
-[12:50:05 2022-05-06] [INFO] Square Brackets Are Enabled
-12:50:05 2022-05-06 INFO Square Brackets Are Disabled
 
 
 ```
