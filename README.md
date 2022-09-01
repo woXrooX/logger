@@ -6,7 +6,7 @@ First include the `logger.h` into your project. Then follow the examples below ð
 ```C++
 #include "logger.h"
 
-int main(int argc, char const *argv[]){
+int main(){
   //In Case "using namespace woXrooX;" Is Always Here :)
   
   //// Log To File
