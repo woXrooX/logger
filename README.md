@@ -10,7 +10,7 @@ int main(){
   //In Case "using namespace woXrooX;" Is Always Here :)
   
   //// Log To File
-  //// Currently No Path Setter Method :)
+  //// Currently No Path Setter Method :(
   //// Absolute Path Defined At -> "woXrooX::Logger::logsAbsolutePath"
   
   // To Enable Log To File.
