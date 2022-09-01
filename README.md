@@ -2,7 +2,7 @@
 Minimal And Simple Logger Implementation In C++
 
 ### How to use ?
-To use the Logger, you need to include the logger.h into your project.
+First include the logger.h into your project.
 ```C++
 #include "logger.h"
 
