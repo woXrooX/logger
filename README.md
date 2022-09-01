@@ -7,7 +7,8 @@ First include the `logger.h` into your project. Then follow the examples below ð
 #include "logger.h"
 
 int main(){
-  //In Case "using namespace woXrooX;" Is Always Here :)
+  // In Case "using namespace woXrooX;" Is Always Here :)
+  // woXrooX::Log is Alias To woXrooX::Logger
   
   //// Log To File
   //// Currently No Path Setter Method :(
