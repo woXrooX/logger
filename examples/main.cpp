@@ -13,10 +13,16 @@ int main(){
   woXrooX::Logger::enableSquareBrackets();
   // woXrooX::Logger::disableSquareBrackets();
 
+  woXrooX::Log::line();
+
   woXrooX::Log::success("Success");
   woXrooX::Log::info("Information");
   woXrooX::Log::warning("Warning");
   woXrooX::Log::error("Error");
+
+  woXrooX::Log::newLine();
+
+  woXrooX::Log::custom("CUSTOM", "Message");
 
   return 0;
 }
