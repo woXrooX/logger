@@ -17,51 +17,46 @@ struct Types{
 namespace woXrooX{
   class Logger final{
   public:
+    ////////////////// APIs | Methods
     ///////// Success
     template<typename T>
-    static void success(T message){
+    static void success(T&& message){
       Logger::log(Types::SUCCESS, message);
     }
 
     ///////// Info
     template<typename T>
-    static void info(T message){
+    static void info(T&& message){
       Logger::log(Types::INFO, message);
     }
 
     ///////// Warning
     template<typename T>
-    static void warning(T message){
+    static void warning(T&& message){
       Logger::log(Types::WARNING, message);
     }
 
     ///////// Error
     template<typename T>
-    static void error(T message){
+    static void error(T&& message){
       Logger::log(Types::ERROR, message);
     }
 
     ///////// Custom
-    template<typename T1, typename T2>
-    static void custom(T1 type, T2 message){
+    template<typename T>
+    static void custom(const std::string& type, T&& message){
       Logger::log(type, message);
     }
 
     ///////// Line
     static void line(){
-      // Comment 4 Daemon. Daemon Has No Terminal To "stdout"
-      // std::cout << Logger::colorLine << "----------------------------------------------------------------" << Logger::colorEnd << '\n';
-
-      // If enabled line for "logToFile"
-      if(Logger::logToFileEnabled) Logger::logToFile("\n----------------------------------------------------------------------------------------\n");
+      if(!Logger::logOnlyToFileEnabled) std::cout << Logger::colorLine << "----------------------------------------------------------------" << Logger::colorEnd << '\n';
+      if(Logger::logToFileEnabled) Logger::logToFile("\n----------------------------------------------------------------\n");
     }
 
     ///////// New Line
     static void newLine(){
-      // Comment 4 Daemon. Daemon Has No Terminal To "stdout"
-      // std::cout << '\n';
-
-      //  If enabled new line for "logToFile"
+      if(!Logger::logOnlyToFileEnabled) std::cout << '\n';
       if(Logger::logToFileEnabled) Logger::logToFile("\n");
     }
 
@@ -133,11 +128,11 @@ namespace woXrooX{
     }
 
   private:
-    /////////// Methods
+    ////////////////// Helpers
     ///////// Log
-    template<typename T1, typename T2>
-    static void log(T1 type, T2 message){
-      // setting color depending on the type
+    template<typename T>
+    static void log(const std::string& type, T&& message){
+      // Setting color depending on the type
       Logger::setColor(type);
 
       // Getting timestamp and setting to a variable so it will be same timestamp on "logToFile()"
@@ -147,21 +142,14 @@ namespace woXrooX{
       // freopen((Logger::logsFolderPath+"all.log").c_str(), "a", stdout);
 
       // Out | Log
-      // Comment 4 Daemon. Daemon Has No Terminal To "stdout"
-      std::cout
-        << Logger::squareBracketsOpen
-        << timestamp
-        << Logger::squareBracketsClose
-        << Logger::squareBracketsOpen
-        << Logger::colorStart
-        << type
-        << Logger::colorEnd
-        << Logger::squareBracketsClose
-        << message << '\n';
+      if(!Logger::logOnlyToFileEnabled)
+        std::cout
+          << Logger::squareBracketsOpen << timestamp << Logger::squareBracketsClose
+          << Logger::squareBracketsOpen << Logger::colorStart << type << Logger::colorEnd << Logger::squareBracketsClose
+          << message << '\n';
 
-      // Cosntructing "logToFile" [timestamp] [TYPE] Message
+      // Log structure: [timestamp] [TYPE] Message
       if(Logger::logToFileEnabled) Logger::logToFile(('[' + timestamp + "] [" + type + "] " + message + '\n'));
-
     }
 
     ///////// logToFile
