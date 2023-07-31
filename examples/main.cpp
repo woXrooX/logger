@@ -1,8 +1,17 @@
 #include "../source/logger.hpp"
 
-int main() {
+#include <iostream>
 
+int main(){
+
+  // Log to file
+  woXrooX::Logger::setPath("./examples/logs/");
   woXrooX::Logger::enableLogToFile();
+  // woXrooX::Logger::disableLogToFile();
+
+  // Square brackets
+  woXrooX::Logger::enableSquareBrackets();
+  // woXrooX::Logger::disableSquareBrackets();
 
   woXrooX::Log::success("Success");
   woXrooX::Log::info("Information");
