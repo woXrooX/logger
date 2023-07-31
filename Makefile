@@ -1,5 +1,5 @@
 # Out
-OUT = -o ./out/bin
+OUT = -o ./examples/out/bin
 
 # Flags
 # -Wall = Warn ALl
