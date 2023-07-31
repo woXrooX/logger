@@ -94,7 +94,7 @@ namespace woXrooX{
       }
 
       // Open the log file in append mode
-      // Logger::file.open(Logger::logsFolderPath+"all.log", std::ios_base::app);
+      Logger::file.open(Logger::logsFolderPath+"all.log", std::ios_base::app);
 
       // Check if file opened successfully
       if(Logger::file.is_open()) Logger::success("Log file opened successfully: all.log");
