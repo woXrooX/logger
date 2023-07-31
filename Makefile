@@ -9,7 +9,7 @@ FLAGS = -Wall
 CPPSTDV = -std=c++2a
 
 # File(s)
-FILES = ./example.cpp
+FILES = ./examples/main.cpp
 
 # Default / Main
 buildAndRunMain: clear buildMain runMain
