@@ -20,7 +20,7 @@ buildMain:
 
 # Runs the outputed file
 runMain: clear
-	./out/bin
+	./examples/out/bin
 
 # Clears The Terminal
 clear:
