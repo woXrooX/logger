@@ -1,7 +1,7 @@
 #ifndef LOGGER_HPP
 #define LOGGER_HPP
 #include <iostream>
-#include <filesystem> // 4 logFilesPath Existance Check
+#include <filesystem> // 4 logsFolderPath Existance Check
 #include <fstream>
 #include <string>
 #include <iomanip> // for time
@@ -66,40 +66,54 @@ namespace woXrooX{
     }
 
 
-    ///////// enable & disable LogToFile
+    ///////// Log to file
+    // Set logs folder path
+    static void setPath(const std::string& path){
+      // Check if the provided path exists. If not, create it.
+      if(!std::filesystem::exists(path)){
+        if(std::filesystem::create_directories(path)) Logger::success("Logs folder created successfully.");
+        else{
+          Logger::error("Could not create logs folder: " + path);
+          return;
+        }
+      }
+
+      Logger::logsFolderPath = path;
+      Logger::info("Logs folder ready to use: " + Logger::logsFolderPath);
+    }
+
     // enable
     static void enableLogToFile(){
-      // Check If "logFilesPath" Exists
-      if(!std::filesystem::exists(Logger::logFilesPath)){
-        Logger::log("WARNING", "Invalid log files path: " + Logger::logFilesPath);
+      // Check if already enabled
+      if(Logger::logToFileEnabled) return;
+
+      // Check If "logsFolderPath" Exists
+      if(!std::filesystem::exists(Logger::logsFolderPath)){
+        Logger::error("Logs folder does not exists. Please set up the directories first using Logger::setPath(\"path/to/logs/\")");
         return;
       }
 
-      // Opening log file
-      // Second argument for append mode
-      Logger::file.open(Logger::logFilesPath+"all.log", std::ios_base::app);
+      // Open the log file in append mode
+      // Logger::file.open(Logger::logsFolderPath+"all.log", std::ios_base::app);
 
       // Check if file opened successfully
-      if(Logger::file.is_open()){
-        // After successful openening enable log to file
-        Logger::logToFileEnabled = true;
-        Logger::log(Types::INFO, "Log to file is enabled");
-        Logger::log(Types::SUCCESS, "Log file opened successfully: all.log");
-        Logger::log(Types::INFO, "Log files path: " + Logger::logFilesPath);
-
-      }else{
-        Logger::log(Types::INFO, "Log to file is not enabled");
-        Logger::log(Types::WARNING, "Could not open log file");
+      if(Logger::file.is_open()) Logger::success("Log file opened successfully: all.log");
+      else{
+        Logger::warning("Could not open the log file.");
+        Logger::info("Log to file is not enabled.");
         return;
       }
+
+      Logger::logToFileEnabled = true;
+      Logger::info("Log to file is enabled.");
     }
 
     // disable
     static void disableLogToFile(){
+      // Check if already disabled
+      if(!Logger::logToFileEnabled) return;
       Logger::logToFileEnabled = false;
-
-      Logger::log(Types::INFO, "Log to file is disabled");
-
+      Logger::info("Log to file is disabled.");
       Logger::closeLogFile();
     }
 
@@ -108,16 +122,14 @@ namespace woXrooX{
     static void enableSquareBrackets(){
       Logger::squareBracketsOpen = "[";
       Logger::squareBracketsClose = "] ";
-
-      Logger::log(Types::INFO, "Square brackets are enabled");
+      Logger::info("Square brackets are enabled.");
     }
 
     // disable
     static void disableSquareBrackets(){
       Logger::squareBracketsOpen = "";
       Logger::squareBracketsClose = " ";
-
-      Logger::log(Types::INFO, "Square brackets are disabled");
+      Logger::info("Square brackets are disabled.");
     }
 
   private:
@@ -132,20 +144,20 @@ namespace woXrooX{
       const std::string timestamp = Logger::timestamp();
 
       // Redirects all stdout to a file. #include <stdio.h>
-      // freopen((Logger::logFilesPath+"all.log").c_str(), "a", stdout);
+      // freopen((Logger::logsFolderPath+"all.log").c_str(), "a", stdout);
 
       // Out | Log
       // Comment 4 Daemon. Daemon Has No Terminal To "stdout"
-      // std::cout
-      //   << Logger::squareBracketsOpen
-      //   << timestamp
-      //   << Logger::squareBracketsClose
-      //   << Logger::squareBracketsOpen
-      //   << Logger::colorStart
-      //   << type
-      //   << Logger::colorEnd
-      //   << Logger::squareBracketsClose
-      //   << message << '\n';
+      std::cout
+        << Logger::squareBracketsOpen
+        << timestamp
+        << Logger::squareBracketsClose
+        << Logger::squareBracketsOpen
+        << Logger::colorStart
+        << type
+        << Logger::colorEnd
+        << Logger::squareBracketsClose
+        << message << '\n';
 
       // Cosntructing "logToFile" [timestamp] [TYPE] Message
       if(Logger::logToFileEnabled) Logger::logToFile(('[' + timestamp + "] [" + type + "] " + message + '\n'));
@@ -197,8 +209,8 @@ namespace woXrooX{
       Logger::file.close();
 
       // Check If File Closed Successfully
-      if(!Logger::file.is_open()) Logger::log(Types::SUCCESS, "Log file closed successfully.");
-      else Logger::log(Types::ERROR, "Can not close the log file.");
+      if(!Logger::file.is_open()) Logger::success("Log file closed successfully.");
+      else Logger::error("Could not close the log file.");
     }
 
     /////////// Variables
@@ -206,7 +218,7 @@ namespace woXrooX{
     static std::ofstream file;
     static bool logToFileEnabled;
     static bool logOnlyToFileEnabled;
-    static const std::string logFilesPath;
+    static std::string logsFolderPath;
 
     // Square Brackets
     static std::string squareBracketsOpen;
@@ -218,10 +230,11 @@ namespace woXrooX{
     static std::string colorLine;
 
   };
+
   std::ofstream Logger::file;
   bool Logger::logToFileEnabled = false;
   bool Logger::logOnlyToFileEnabled = false;
-  const std::string Logger::logFilesPath = "/home/woxroox/Desktop/woXTools/logs/";
+  std::string Logger::logsFolderPath = "./logs/";
 
   std::string Logger::squareBracketsOpen = "";
   std::string Logger::squareBracketsClose = " ";
