@@ -17,6 +17,7 @@ int main(){
 
   woXrooX::Log::success("Success");
   woXrooX::Log::info("Information");
+  woXrooX::Log::important("Important");
   woXrooX::Log::warning("Warning");
   woXrooX::Log::error("Error");
 

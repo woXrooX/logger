@@ -10,6 +10,7 @@
 struct Types{
   static inline const std::string SUCCESS = "SUCCESS";
   static inline const std::string INFO = "INFO";
+  static inline const std::string IMPORTANT = "IMPORTANT";
   static inline const std::string WARNING = "WARNING";
   static inline const std::string ERROR = "ERROR";
 };
@@ -28,6 +29,12 @@ namespace woXrooX{
     template<typename T>
     static void info(T&& message){
       Logger::log(Types::INFO, message);
+    }
+
+    ///////// Important
+    template<typename T>
+    static void important(T&& message){
+      Logger::log(Types::IMPORTANT, message);
     }
 
     ///////// Warning
@@ -187,6 +194,7 @@ namespace woXrooX{
         Logger::colorStart = "\033[1;90m";
         if(Types::SUCCESS.compare(type) == 0) Logger::colorStart = "\033[1;32m";
         else if(Types::INFO.compare(type) == 0) Logger::colorStart = "\033[1;34m";
+        else if(Types::IMPORTANT.compare(type) == 0) Logger::colorStart = "\033[1;35m";
         else if(Types::WARNING.compare(type) == 0) Logger::colorStart = "\033[1;33m";
         else if(Types::ERROR.compare(type) == 0) Logger::colorStart = "\033[1;31m";
       }
