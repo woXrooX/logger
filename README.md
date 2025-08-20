@@ -1,3 +1,5 @@
+*This repository is no longer maintained. Development has been moved to woXrooX/CPP_tools as a subproject.*
+
 # C++ Logger
 Minimal And Simple Logger Implementation In C++
 
